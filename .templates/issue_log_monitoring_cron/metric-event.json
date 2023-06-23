@@ -1,0 +1,29 @@
+{
+    "enabled": true,
+    "summary": "{{.name}}",
+    "queryDefinition": {
+      "type": "METRIC_KEY",
+      "metricKey": "log.{{.metric_key}}",
+      "aggregation": "AVG",
+      "entityFilter": {
+        "conditions": []
+      },
+      "dimensionFilter": []
+    },
+    "modelProperties": {
+      "type": "STATIC_THRESHOLD",
+      "threshold": {{.threshold}},
+      "alertOnNoData": false,
+      "alertCondition": "below",
+      "violatingSamples": 3,
+      "samples": 5,
+      "dealertingSamples": 5
+    },
+    "eventTemplate": {
+      "title": "Log test Grail",
+      "description": "The {metricname} value was {alert_condition} normal behavior.",
+      "eventType": "CUSTOM_ALERT",
+      "davisMerge": true,
+      "metadata": []
+    }
+  }

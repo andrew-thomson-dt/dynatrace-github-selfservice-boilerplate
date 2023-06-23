@@ -1,0 +1,67 @@
+name: log - cron - alert
+description: Configures k8 cron job ingest, metric and alert
+title: "Log Cron Alert -  <config name>"
+labels: ["issue_log_monitoring_cron"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form will take all the necessary info to create alert when a cron job has failed to run in a given time in hours. 
+        For example if a cron job is scheduled to run every 24 hours, and it has not run in 26 hours, an alert will be triggered.
+  - type: dropdown
+    id: environment
+    attributes:
+      label: environment
+      description: Which environment is this configuration for?
+      options:
+        - dev
+        - sandbox
+        - production
+    validations:
+      required: true
+  - type: dropdown
+    id: department
+    attributes:
+      label: department
+      description: Which department does your app belong to?
+      options:
+        - backend
+        - frontend
+        - infrastructure
+    validations:
+      required: true
+  - type: input
+    id: application
+    attributes:
+      label: application
+      placeholder: search, datastore, core, etc
+  - type: input
+    id: entity_id
+    attributes:
+      label: entity_id
+      description: The entity tag used to match the entity in ServiceNow
+      placeholder: SVCOFF00001234
+  - type: input
+    id: namespace
+    attributes:
+      label: namespace
+      description: K8s namespace where the cron job is running
+      placeholder:  namespace
+  - type: input
+    id: cron_name
+    attributes:
+      label: cron_name
+      description: The name of the cron job
+      placeholder: bulk_import
+  - type: input
+    id: matcher
+    attributes:
+      label: matcher
+      description: log matcher to detect the cron job has run
+      placeholder: job successful
+  - type: input
+    id: threshold
+    attributes:
+      label: threshold
+      description: Alert below this number
+      placeholder: 6

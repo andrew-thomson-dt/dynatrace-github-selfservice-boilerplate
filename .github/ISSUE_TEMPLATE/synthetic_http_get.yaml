@@ -37,9 +37,9 @@ body:
       label: application
       placeholder: search, datastore, core, etc
   - type: input
-    id: entity_tag
+    id: entity_id
     attributes:
-      label: entity_tag
+      label: entity_id
       description: The entity tag used to match the entity in ServiceNow
       placeholder: SVCOFF00001234
   - type: input

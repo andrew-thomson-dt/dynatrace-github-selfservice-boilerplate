@@ -2,6 +2,7 @@ import os
 import pathlib
 import yaml
 import subprocess
+import shutil
 
 
 def import_issue_data():
@@ -59,15 +60,17 @@ def add_project_to_manifest(project_name, project_path):
     with open('manifest.yaml', 'w') as f:
         yaml.dump(manifest, f, default_flow_style=False)
 
-def move_template_files(project_path):
-    # copy the template from .templates/http-health/template.json to the new project folder
-    template_path = os.path.join(project_path, 'template.json')
-    config_path = os.path.join(project_path, 'config.yaml')
-
-    project_type = "_".join(project_path.split('/')[-1].split('_')[:-1])
-
-    os.system(f"cp .templates/{project_type}.json {template_path}")
-    os.system(f"cp .templates/{project_type}.yaml {config_path}")
+def move_template_files(project_path, template_name):
+    template_path = os.path.join('.templates', template_name)
+    
+    if os.path.exists(template_path):
+        for filename in os.listdir(template_path):
+            source = os.path.join(template_path, filename)
+            if os.path.isfile(source):
+                destination = os.path.join(project_path, filename)
+                shutil.copy(source, destination)
+    else:
+        print(f"No template found with name: {template_name}")
 
 
 def write_environment_vars(project_dict):
@@ -93,7 +96,7 @@ if __name__ == '__main__':
 
     add_project_to_manifest(project_name, project_path)
 
-    move_template_files(project_path)
+    move_template_files(project_path, project_dict.get('project_type'))
 
     write_environment_vars(project_dict)
 

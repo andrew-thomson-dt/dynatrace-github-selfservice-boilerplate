@@ -11,3 +11,6 @@ configs:
       url:
         type: environment
         name: uri
+      svcoff:
+        type: environment
+        name: entity_id

@@ -1,0 +1,21 @@
+{
+    "enabled": true,
+    "config-item-title": "{{.name}}",
+    "send-to-storage": true,
+    "matchers": [
+      {
+        "attribute": "log.source",
+        "operator": "MATCHES",
+        "values": [
+          "{{.log_source_filter}}"
+        ]
+      },
+      {
+        "attribute": "k8s.namespace.name",
+        "operator": "MATCHES",
+        "values": [
+          "{{.namespace}}"
+        ]
+      }
+    ]
+  }

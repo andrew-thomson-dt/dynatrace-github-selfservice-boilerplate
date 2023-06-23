@@ -1,0 +1,7 @@
+{
+    "enabled": true,
+    "key": "log.{{.log_key}}",
+    "query": "matchesValue(log.source, \"{{.source_match_string}}\") and matchesPhrase(content,\"{{.content_match_string}}\")",
+    "measure": "OCCURRENCE",
+    "dimensions": []
+  }
