@@ -1,0 +1,13 @@
+configs:
+- id: auto-synthetic-monitor
+  type:
+    api: synthetic-monitor
+  config:
+    name: 
+      type: environment
+      name: api_name
+    template: template.json
+    parameters:
+      url:
+        type: environment
+        name: uri

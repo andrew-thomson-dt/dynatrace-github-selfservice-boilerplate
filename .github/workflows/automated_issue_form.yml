@@ -1,0 +1,62 @@
+name: Create project from form
+
+on: 
+  issues:
+    types: 
+      - opened
+
+jobs:
+  initiate-project:
+    name: Create Project
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+        pull-requests: write
+        issues: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Thank you for submitting the form. The responses will now be validated and a project will be created.
+            This may take a few minutes.
+
+      - name: issue body to textfile
+        run:
+            echo "${{ github.event.issue.body }}" >> issue_body.txt
+
+      - name: processing
+        env:
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_ISSUE_LABEL: ${{ github.event.issue.labels[0].name }}
+
+        run: |
+            pip install pyyaml
+            python .github/scripts/issue_scripts/create_project.py
+
+      - name: remove issue body textfile
+        run: |
+            rm issue_body.txt
+
+      # Create pull request:
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+            title: "Auto - ${{ github.event.issue.number }}"
+            commit-message: created by issue template http-health
+            branch: ${{ github.event.issue.labels[0].name }}_${{ github.event.issue.number }}
+            token: ${{ secrets.PAT }}
+
+      - name: Add comment
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Processing complete, a branch for your project has been created: ${{ github.event.issue.number }}
+            The pull request will be reviewed by a member of the team and merged if approved.

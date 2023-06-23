@@ -1,0 +1,56 @@
+name: synthetic - http - GET
+description: Creates a synthetic test to monitor an API endpoint.
+title: "HTTP GET -  <config name>"
+labels: ["issue_synthetic_http_get"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form will take all the necessary info to create a http check in dynatrace to monitor api endpoints.
+        The process is automated, and templated to ensure consistency. If you require a more complex check, please create your own project as 
+        described in the readme.
+  - type: dropdown
+    id: environment
+    attributes:
+      label: environment
+      description: Which environment is this configuration for?
+      options:
+        - dev
+        - sandbox
+        - production
+    validations:
+      required: true
+  - type: dropdown
+    id: department
+    attributes:
+      label: department
+      description: Which department does your app belong to?
+      options:
+        - backend
+        - frontend
+        - infrastructure
+    validations:
+      required: true
+  - type: input
+    id: application
+    attributes:
+      label: application
+      placeholder: search, datastore, core, etc
+  - type: input
+    id: entity_tag
+    attributes:
+      label: entity_tag
+      description: The entity tag used to match the entity in ServiceNow
+      placeholder: SVCOFF00001234
+  - type: input
+    id: api_name
+    attributes:
+      label: api_name
+      description: The process name for your api.
+      placeholder:  core-health
+  - type: input
+    id: uri
+    attributes:
+      label: uri
+      description: The fully qualified endpoint to monitor.
+      placeholder: https://api-core-sandbox.service.core-compute-sandbox.internal/health

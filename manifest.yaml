@@ -1,0 +1,19 @@
+environmentGroups:
+- environments:
+  - auth:
+      token:
+        name: MONACO_SANDBOX
+    name: sandbox
+    url:
+      value: https://iww11415.live.dynatrace.com
+  name: sandbox
+- environments:
+  - auth:
+      token:
+        name: MONACO_DEV
+    name: dev
+    url:
+      value: https://xfp12351.live.dynatrace.com
+  name: dev
+manifestVersion: 1.0
+projects:

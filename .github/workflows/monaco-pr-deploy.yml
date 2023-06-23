@@ -1,0 +1,53 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy Configuration
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - configuration/**
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy Configuration
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # Set project variables
+      - name: Set project variables
+        run: |
+          echo "$(cat .temp/project_details.txt)" >> $GITHUB_ENV
+
+      - name: Export variables
+
+        run: |
+          pip install pyyaml
+          python .github/scripts/pre_deploy.py
+
+
+      # Install Monaco
+      - name: Install Monaco
+        run: |
+          curl -L "https://github.com/Dynatrace/dynatrace-configuration-as-code/releases/latest/download/monaco-linux-amd64" -o monaco
+          chmod +x monaco
+          sudo mv monaco /usr/local/bin/
+
+      - name: Monaco Dry Run
+        env:
+            MONACO_DEV: ${{ secrets.MONACO_DEV }}
+            MONACO_SANDBOX: ${{ secrets.MONACO_SANDBOX }}
+        run: |
+            monaco deploy --dry-run -g ${{ env.PROJECT_ENV }} -p ${{ env.PROJECT_NAME }} manifest.yaml 
+
+      - name: Monaco Deploy
+        env:
+            MONACO_DEV: ${{ secrets.MONACO_DEV }}
+            MONACO_SANDBOX: ${{ secrets.MONACO_SANDBOX }}
+        run: |
+            monaco deploy -g ${{ env.PROJECT_ENV }} -p ${{ env.PROJECT_NAME }} manifest.yaml 

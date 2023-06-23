@@ -1,0 +1,75 @@
+name: Deploy To Dev
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate-project:
+    runs-on: ubuntu-latest
+    name: Validate project setup
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # validate project
+      - name: Run project validation
+
+        run: |
+            pip install pyyaml
+            python .github/scripts/pre_dev_deploy.py
+
+      # Install Monaco
+      - name: Install Monaco
+        run: |
+          curl -L "https://github.com/Dynatrace/dynatrace-configuration-as-code/releases/latest/download/monaco-linux-amd64" -o monaco
+          chmod +x monaco
+          sudo mv monaco /usr/local/bin/
+
+      # Dry run the deployment to check for defects
+      - name: Monaco Dry Run
+        env:
+            MONACO_DEV: ${{ secrets.MONACO_DEV }}
+            MONACO_SANDBOX: ${{ secrets.MONACO_SANDBOX }}
+            PROJECT: ${{ github.head_ref}}
+        run: | 
+            echo $PROJECT
+            monaco deploy --dry-run -g dev manifest.yaml -p $PROJECT
+
+      # Deploy to dev
+      - name: Monaco Deploy
+        env:
+            MONACO_DEV: ${{ secrets.MONACO_DEV }}
+            MONACO_SANDBOX: ${{ secrets.MONACO_SANDBOX }}
+            PROJECT: ${{ github.head_ref }}
+        run: | 
+            monaco deploy -g dev manifest.yaml -p $PROJECT
+
+  create-delete-artifacts:
+    permissions:
+      contents: write
+    needs: validate-project
+    runs-on: ubuntu-latest
+    name: Create delete.yaml
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          #token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      # create deletion artifacts
+      - name: Create delete artifacts
+        run: |
+            pip install pyyaml
+            python .github/scripts/post_pr_actions.py
+
+      # check in code
+      - uses: stefanzweifel/git-auto-commit-action@v4
