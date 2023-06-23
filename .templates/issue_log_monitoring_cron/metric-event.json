@@ -14,7 +14,7 @@
       "type": "STATIC_THRESHOLD",
       "threshold": {{.threshold}},
       "alertOnNoData": false,
-      "alertCondition": "below",
+      "alertCondition": "BELOW",
       "violatingSamples": 3,
       "samples": 5,
       "dealertingSamples": 5

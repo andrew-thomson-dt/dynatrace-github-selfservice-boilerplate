@@ -6,7 +6,7 @@ configs:
     name: 
       type: environment
       name: api_name
-    template: template.json
+    template: issue_synthetic_http_get.json
     parameters:
       url:
         type: environment

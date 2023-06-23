@@ -56,7 +56,6 @@
      "version": "1.0"
     },
     "tags": [
-        {"SVCOFF":"{{.svcoff}}"}
     ],
     "type": "HTTP"
    }
